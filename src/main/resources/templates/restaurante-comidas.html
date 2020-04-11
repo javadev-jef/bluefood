@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html
+    lang="pt-BR"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}" 
+    th:with="link=@{/restaurante/home}, nofixbar=true, search='noshow', screen='restaurante'">
+
+<head>
+    <!--TOASTFY STYLE-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"/>
+    <!--TOASTFY SCRIPT-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+</head>
+
+<body th:onload="'showToastPage(\'validationMsg\');onloadRestauranteComida('+${itemCardapio.id}+');'">
+    <div layout:fragment="content">
+        <main class="container d-flex-768">
+            
+            <!--TABS FOR MOBILE MODE-->
+            <div class="button-tabs">
+                <input id="novo-item-tab" type="button" class="tab-button" onclick="openContentTab('novo-item', this);" value="Novo"/>
+                <input id="tab-default-open" type="button" class="tab-button" onclick="openContentTab('lista-item', this)" value="Todos"/>
+            </div>
+            <!--END - TABS FOR MOBILE MODE-->
+
+            <!--REGISTER ITEM-->
+            <div id="novo-item" class="form-content tabcontent">
+                <div class="title-login">
+                    <h1>Novo Item</h1>
+                </div>
+
+                <!--MSG SERVER RESPONSE-->
+                <span 
+                    class="msg-server" 
+                    th:if="${msg} != null" 
+                    th:text="${msg}"
+                    th:classappend="${#fields.hasErrors('${itemCardapio.*}') ? 'msg-server-error' : ''}"
+                    id="validationMsg" style="display: none;"></span>
+                <!--END - MSG SERVER RESPONSE-->
+
+                <form 
+                    enctype="multipart/form-data"
+                    th:action="@{/restaurante/comidas/cadastrar}" 
+                    method="POST" th:object="${itemCardapio}"
+                    onsubmit="disableButtonOnSubmit('btn-comida')">
+                    <input type="hidden" th:field="*{id}"/>
+                    <input type="hidden" name="restaurante.id" th:value="${restaurante.id}">
+                    <input type="hidden" id="validationError" th:if="${validationError != null}" th:value="${validationError}"/>
+
+                    <label>Nome</label>
+                    <input 
+                        type="text" 
+                        th:field="*{nome}" 
+                        placeholder="Cheese Burger"
+                        th:classappend="${#fields.hasErrors('nome') ? 'error-input' : ''}"/>
+                    <span class="error-input" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span>
+
+                    <label>Descrição</label>
+                    <input 
+                        type="text" 
+                        th:field="*{descricao}" 
+                        placeholder="Sanduíche padrão que mata a fome"
+                        th:classappend="${#fields.hasErrors('descricao') ? 'error-input' : ''}"/>
+                    <span class="error-input" th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}"></span>
+
+                    <label>Preço</label>
+                    <input 
+                        type="text" 
+                        inputmode="decimal"
+                        th:field="*{preco}" 
+                        pattern="(^\d+(\.|,)?\d+)$|(^\d)$"
+                        placeholder="19,30"
+                        th:classappend="${#fields.hasErrors('preco') ? 'error-input' : ''}"/>
+                    <span class="error-input" th:if="${#fields.hasErrors('preco')}" th:errors="*{preco}"></span>
+
+                    <label>Categoria</label>
+                    <select 
+                        th:field="*{categoria}" th:classappend="${#fields.hasErrors('categoria') ? 'error-input' : ''}">
+                        <option selected hidden value="">Selecionar</option>
+                        <option th:each="cat : ${categorias}" th:value="${cat.id}" th:text="${cat.descricao}"></option>
+                    </select>
+                    <span class="error-input" th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"></span>
+                    
+                    <label>Imagem</label>
+                    <label 
+                        for="imagem"
+                        class="input-file"
+                        th:classappend="${#fields.hasErrors('imagemFile') ? 'error-input' : ''}">Clique aqui para selecionar</label>
+                    <input type="file" id="imagem" th:field="*{imagemFile}"/>
+                    <span class="error-input" th:if="${#fields.hasErrors('imagemFile')}" th:errors="*{imagemFile}"></span>
+
+                    <label>Capa</label>
+                    <label 
+                        for="capa"
+                        class="input-file"
+                        th:classappend="${#fields.hasErrors('capaFile') ? 'error-input' : ''}">Clique aqui para selecionar</label>
+                    <input type="file" id="capa" th:field="*{capaFile}"/>
+                    <span class="error-input" th:if="${#fields.hasErrors('capaFile')}" th:errors="*{capaFile}"></span>
+
+                    <div class="group-buttons-inline">
+                        <input type="submit" value="Salvar" id="btn-comida"/>
+                        <input type="reset" value="Cancelar" th:onclick="'location.href=\''+@{/restaurante/comidas/}+'\';'"/>
+                    </div>
+                </form>
+            </div>
+            <!--END - REGISTER ITEM-->
+
+            <!--LIST ITEMS / MOBILE-->
+            <section id="lista-item" class="itens-comida tabcontent">
+                <section class="lista-produtos-carrinho mCustomScrollbar" data-mcs-theme="minimal-dark">
+                    <div class="produto" th:each="item : ${itensCardapio}">
+                        <div class="imagem-produto" th:style="'background-image: url('+@{/images/remote/comida/} + ${item.imagem}+')'">
+                        </div>
+                        <div class="detalhes-produto">
+                            <div class="descricao-produto">
+                                <h4 th:text="${item.nome}"></h4>
+                                <div class="group-buttons-inline">
+                                    <i class="material-icons nav-icon" th:onclick="'location.href=\''+@{/restaurante/comidas/editar}+'?itemId='+${item.id}+'\';'">&#xe254;</i>
+                                    <i class="material-icons nav-icon" th:onclick="'location.href=\''+@{/restaurante/comidas/remover}+'?itemId='+${item.id}+'\';'">&#xe872;</i>
+                                    <span class="valor-produto" th:text="${#numbers.formatCurrency(item.preco)}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="produto" th:if="${itensCardapio == null || itensCardapio.size() == 0}">
+                        Nenhum item cadastrado
+                    </div>
+                </section>
+            </section>
+            <!--END - LIST ITEMS / MOBILE-->
+
+            <!--LIST ITEMS / DESKTOP-->
+            <div class="form-content comida-table">
+                <div class="title-login">
+                    <h1>Todos os Itens</h1>
+                </div>
+                <section class="itens-comida-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Descrição</th>
+                                <th>Categoria</th>
+                                <th>Preço</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="item : ${itensCardapio}">
+                                <td th:text="${item.id}"></td>
+                                <td th:text="${item.nome}" style="text-align: justify;"></td>
+                                <td th:text="${item.categoria.descricao}"></td>
+                                <td th:text="${#numbers.formatCurrency(item.preco)}"></td>
+                                <td style="position: relative;">
+                                    <div class="options-table">
+                                        <i class="material-icons"
+                                            th:onclick="'location.href=\''+@{/restaurante/comidas/editar}+'?itemId='+${item.id}+'\';'">&#xe3c9;</i>
+                                        <i class="material-icons" 
+                                            th:onclick="'location.href=\''+@{/restaurante/comidas/remover}+'?itemId='+${item.id}+'\';'">&#xe872;</i>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" style="text-align: center;" th:if="${itensCardapio.size() == 0}">Nenhuma comida cadastrada</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+            <!--END - LIST ITEMS / DESKTOP-->
+
+        </main>
+    </div>
+    <div layout:fragment="othersImports">
+        <script th:src="@{/js/toast.js}"></script> <!--TOAST BUILDER-->
+    </div>
+</body>
+</html>

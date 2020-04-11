@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}"
+    th:with="link=@{/cliente/home}">
+<head>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"/>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+</head>
+<body>
+    <div layout:fragment="content">
+        <main class="container">
+            <div class="titulo-restaurante">
+                <span th:style="'background:url('+@{/images/remote/logotipo/} +${restaurante.logotipo}+');background-size: cover; background-position:center;height: 24px; width:24px; margin-right: 10px;border-radius:6px;'"></span>
+                <h2 th:text="${restaurante.razao}"></h2>
+            </div>
+
+            <!--SLIDER RESTAURANT CATEGORY-->
+            <h4 class="titulo">Categorias</h4>
+            <section class="categorias-restaurante">
+                <form id="formFilterCategoria" th:action="@{/cliente/restaurante}" method="GET">
+                    <input class="categoriaId" name="categoriaId" type="hidden" />
+                    <input name="idRestaurante" th:value="${restaurante.id}" type="hidden"/>
+                    <div class="categorias-restaurante-flex">
+                        <div class="categoria-restaurante" 
+                             th:each="categoria : ${categorias}" 
+                             th:onclick="'filterCategoriaRest('+${categoria.id}+','+${restaurante.id}+');'">
+                            <div class="categoria" th:style="'background-image: url(' + @{/images/remote/categoria-comidas/} + ${categoria.urlImagem} +')'"></div>
+                            <span th:text="${categoria.descricao}" class="categoria-text"></span>
+                        </div>
+                        <div class="categoria-restaurante" 
+                             th:onclick="'filterCategoriaRest(null,'+${restaurante.id}+');'">
+                            <div class="categoria" th:style="'background:url('+@{/images/remote/logotipo/} +${restaurante.logotipo}+');background-size: cover;'"></div>
+                            <span class="categoria-text">Todas</span>
+                        </div>
+                    </div>
+                </form>
+                <i class="material-icons btn-next-slick btn-next-comida-slick">&#xe409;</i>
+                <i class="material-icons btn-prev-slick btn-prev-comida-slick">&#xe408;</i>
+            </section>
+            <!--END - SLIDER RESTAURANT CATEGORY-->
+
+            <h4 class="titulo">Produtos</h4>
+            <form id="formItensCardapio" action="GET" th:action="@{/cliente/restaurante}">
+
+                <!--TOASTFY ONLY-->
+                <input type="hidden" id="validationError" th:if="${validationError != null}" th:value="${validationError}"/> 
+
+                <input type="hidden" class="itemCardapioId" name="itemCardapioId"/>
+                <input type="hidden" name="idRestaurante" th:value="${restaurante.id}"/>
+
+                <!--MSG SERVER RESPONSE-->
+                <span th:text="${msg}" id="validationMsg" hidden></span>
+                <!--END - MSG SERVER RESPONSE-->
+
+                <!--LIST ITEMS-->
+                <section class="lista-produtos">
+                        <div class="produto" th:each="item : ${itensCardapio}" th:onclick="'openModalProduct('+${item.id}+')'">
+                            <div class="imagem-produto">
+                                <img th:src="@{/images/remote/comida/} + ${item.imagem}"/>
+                            </div>
+                            <div class="detalhes-produto">
+                                <div class="descricao-produto">
+                                    <h4 th:text="*{item.nome}"></h4>
+                                    <span th:text="*{item.descricao}"></span>
+                                </div>
+                                <span class="valor-produto" th:text="*{#numbers.formatCurrency(item.preco)}"></span>
+                            </div>
+                        </div>
+                    <div th:if="${itensCardapio == null || itensCardapio.size() == 0}" class="not-found">
+                        Nenhum produto encontrado para categoria selecionada
+                    </div>
+                </section>
+                <!--END - LIST ITEMS-->
+            </form>
+
+            <!--MODAL ITEM-->
+            <div id="modal" style="display: flex;" th:if="${itemCardapioSelected}">
+                <div class="item-popup mCustomScrollbar" data-mcs-theme="minimal-dark">
+                    <i class="material-icons ic-close" title="Fechar" onclick="hideModal()">&#xe5cd;</i>
+                    <div class="image-item"
+                        th:style="'background-image: url('+@{${itemCardapioSelected.capa}}+');'">
+                        <div>
+                            <div class="box-alpha">
+                                <h5 th:text="${itemCardapioSelected.restaurante.razao}"></h5>
+                                <h4 th:text="${itemCardapioSelected.nome}"></h4>
+                            </div>
+                        </div>
+                        <div class="msgErro box-alpha" th:if="${msg != null}">
+                            <span th:text="${msg}"></span>
+                        </div>
+                        <div class="item-preco">
+                            <span 
+                                class="box-alpha" 
+                                th:text="${#numbers.formatCurrency(itemCardapioSelected.preco)}"
+                                th:if="${msg == null}"></span>
+                        </div>
+                    </div>
+                    <form action="GET" th:action="@{/cliente/carrinho/adicionar}">
+                        <input type="hidden" name="restauranteId" th:value="${itemCardapioSelected.restaurante.id}"/>
+                        <input type="hidden" name="itemId" th:value="${itemCardapioSelected.id}"/>
+                        <div class="details">
+                            <label class="lbl-item">Descrição:</label>
+                            <p class="descricao-item" th:text="${itemCardapioSelected.descricao}"></p>
+
+                            <label class="lbl-item" for="observacao">Observações:</label>
+                            <textarea id="observacao" wrap="soft" name="observacao" rows="10"></textarea>
+
+                            <div class="bottom">
+                                <div class="input-counter" style="margin-right: 10px;">
+                                    <i onclick="calcValueByType('SUB', 'qtd')" class="material-icons">&#xe15b;</i>
+                                    <input id="qtd" name="qtd" type="text" value="1" readonly/>
+                                    <i onclick="calcValueByType('SUM', 'qtd')" id="sum" class="material-icons">&#xe145;</i>
+                                </div>
+                                <input type="submit" value="Adicionar ao carrinho"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--END - MODAL ITEM-->
+        </main>
+    </div>
+    <div layout:fragment="othersImports">
+        <script th:src="@{/js/slick.js}"></script>
+        <script th:src="@{/js/sliders.js}"></script>
+        <script th:src="@{/js/toast.js}"></script>
+        <script>showToastPage('validationMsg')</script>
+    </div>
+</body>
+</html>

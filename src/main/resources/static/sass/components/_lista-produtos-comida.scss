@@ -1,0 +1,162 @@
+section.itens-comida
+{
+    //LISTA DE PRODUTOS
+    section.lista-produtos-carrinho
+    {
+        max-height: calc(100vh - 130px);
+        div.produto
+        {
+            width: 100%;
+            height: 100px;
+            border-top: 1px #D8D8D8 solid;
+            display: flex;
+            font-size: 14px;
+            background-color: rgba(242, 242, 242, 0.5);
+            padding: 12px;
+            align-items: center;
+            -webkit-tap-highlight-color: transparent;
+
+            &:last-of-type
+            {
+                border-bottom: 1px #D8D8D8 solid;
+            }
+
+            &:hover
+            {
+                cursor: pointer;
+                box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+            }
+
+            div.detalhes-produto
+            {
+                width: calc(100% - 72px);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0px 12px;
+
+                div.descricao-produto
+                {
+                    max-height: 100%;
+                    width: 100%;
+
+                    div.group-buttons-inline
+                    {
+                        display: flex;
+                        padding: 6px 0 0 0;
+                        position: relative;
+
+                        i.material-icons
+                        {
+                            color: #333333;
+                            border: 1px #BDBDBD dotted;
+                            border-radius: 4px;
+                            text-align: center;
+                            line-height: 38px;
+                            width: 38px;
+                            height: 40px;
+                            margin-right: 10px;
+
+                            &:hover
+                            {
+                                background-color: #f2f2f2;
+                            }
+                        }
+                    }
+
+                    h4, span
+                    {
+                        overflow: hidden;
+                        display: -webkit-box;
+                        -webkit-line-clamp: 2;
+                        -webkit-box-orient: vertical;
+                    }
+                }
+
+                span.valor-produto
+                {
+                    text-align: center;
+                    border-radius: 4px;
+                    line-height: 40px;
+                    padding: 0 6px;
+                    height: 40px;
+                    border: 1px #BDBDBD dotted;
+                    position: absolute;
+                    right: 0;
+                    font-weight: bold;
+                }
+            }
+
+            div.imagem-produto
+            {
+                width:72px;
+                height: 72px;
+                border: 1px #D8D8D8 solid;
+                border-radius: 4px;
+                background-size: cover;
+                background-repeat: no-repeat;
+
+                > img
+                {
+                    object-fit: cover;
+                    border-radius: 4px;
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
+    }
+}
+
+section.itens-comida-table, div.comida-table
+{
+    display: none;
+}
+
+//DESKTOP VERSION
+@media screen and (min-width: 768px)
+{
+    section.itens-comida, div.button-tabs
+    {
+        display: none !important;
+    }   
+
+    div.form-content, section.itens-comida-table, div.comida-table
+    {
+        display: block !important;
+    }
+
+    .d-flex-768
+    {
+        display: flex !important;
+    }
+
+    section.itens-comida-table
+    {
+        margin-top: 20px;
+        max-height: 500px;
+        overflow-y: scroll;
+
+        &::-webkit-scrollbar 
+        {
+            width: 6px;
+        }
+
+        &::-webkit-scrollbar-thumb 
+        {
+            background: #E6E6E6;
+            border-radius: 4px !important;
+        }
+
+        table
+        {
+            width: 100%;
+            th
+            {
+                position: sticky;
+                top: 0;
+                z-index: 50;
+            }
+        }
+    }
+}

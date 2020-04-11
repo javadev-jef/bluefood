@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html
+    lang="pt-BR"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}" 
+    th:with="link=@{/restaurante/home}, search='noshow', screen='restaurante'">
+
+<body th:onload="'onloadRestauranteHome('+${openPedidoTab}+')'">
+    <div layout:fragment="content">
+        <main class="container">
+
+            <!--TABS FOR MOBILE MODE-->
+            <div class="button-tabs">
+                <input id="tab-default-open" type="button" class="tab-button" onclick="openContentTab('painel-adm', this)" value="Painel Adm"/>
+                <input id="tab-pedidos" type="button" class="tab-button" onclick="openContentTab('pedidos', this)" value="Pedidos"/>
+            </div>
+            <!--END - TABS FOR MOBILE MODE-->
+
+            <!--ADM OPTIONS-->
+            <div id="painel-adm" class="tabcontent d-block-768">
+                <h4 class="titulo">Painel Administrativo</h4>
+                <fieldset class="no-fieldset">
+                    <legend>Opções</legend>
+                    <section class="painel-options mCustomScrollbar" data-mcs-theme="minimal-dark">
+                        <div class="option" th:onclick="'location.href=\''+@{/restaurante/comidas/}+'\';'">
+                            <i class="material-icons-two-tone option-ico">&#xe57a;</i>
+                            <div class="descrition">
+                                <span class="option-legend">Cadastro/Consulta</span>
+                                <span class="option-title">Comidas</span>
+                            </div>
+                        </div>
+                        <div class="option" th:onclick="'location.href=\''+@{/restaurante/relatorio/pedidos/}+'\';'">
+                            <i class="material-icons-two-tone option-ico">&#xe26b;</i>
+                            <div class="descrition">
+                                <span class="option-legend">Somente Consulta</span>
+                                <span class="option-title">Relatório de Pedidos</span>
+                            </div>
+                        </div>
+                        <div class="option" th:onclick="'location.href=\''+@{/restaurante/relatorio/itens/}+'\';'">
+                            <i class="material-icons-two-tone option-ico">&#xe26b;</i>
+                            <div class="descrition">
+                                <span class="option-legend">Somente Consulta</span>
+                                <span class="option-title">Relatório de Itens</span>
+                            </div>
+                        </div>
+                    </section>
+                </fieldset>
+            </div>
+            <!--END - ADM OPTIONS-->
+
+            <!--LAST ORDERS-->
+            <div id="pedidos" class="tabcontent d-block-768">
+                <h4 class="titulo" id="lista-pedidos">Ultimos Pedidos</h4>
+                <span th:if="${pedidos.size() == 0}" style="margin-left: 8px;">Nenhum pedido recebido ainda</span>
+                <section class="lista-pedidos pedidos-restaurante mCustomScrollbar" data-mcs-theme="minimal-dark" id="lista-pedidos">
+                    <div class="pedido" 
+                         th:each="pedido : ${pedidos}"
+                         th:ondblclick="'location.href=\''+@{/restaurante/pedido}+'?pedidoId='+${pedido.id}+'\';'">
+                        <div class="data-pedido">
+                            <span th:text="${pedido.getDayOfMonth()}"></span>
+                            <span th:text="${pedido.getShortMonthName()}"></span>
+                        </div>
+                        <div class="detalhes-pedido">
+                            <strong class="nome-restaurante" th:text="${pedido.getFormattedId()}+' - '+${pedido.cliente.nome}"></strong>
+                            <ul class="itensPedido" style="display: block;">
+                                <li>
+                                    <strong>Endereço:</strong>
+                                    <span th:text="${pedido.getEnderecoCompletoCliente()}"></span>
+                                </li>
+                                <li>
+                                    <span class="status-pedido">
+                                        <strong>Status:</strong>
+                                        <span th:text="${pedido.status.descricao}"></span>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                        <a class="btn-pedido" th:onclick="'location.href=\''+@{/restaurante/pedido}+'?pedidoId='+${pedido.id}+'\';'">Detalhar</a>
+                    </div>
+                </section>
+            </div>
+            <!--END - LAST ORDERS-->
+        </main>
+    </div>
+    <div layout:fragment="othersImports">
+    </div>
+</body>
+</html>

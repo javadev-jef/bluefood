@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html
+    lang="pt-BR"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org" 
+    layout:decorate="~{layout}" 
+    th:with="link=@{/cliente/home}, screen='carrinho', navmobile='noshow', search='noshow'">
+<head>
+    <!--TOASTFY STYLE-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"/>
+    <!--TOASTFY SCRIPT-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+</head>
+<body onload="showToastPage('validationMsg')">
+    <div layout:fragment="content">
+        <main class="container">
+            <div class="form-content">
+                <div class="title-login">
+                    <h1>Realizar pagamento</h1>
+                    <p>Cartão de crédito</p>
+                </div>
+
+                <!--MSG SERVER RESPONSE-->
+                <span 
+                    class="msg-server" 
+                    id="validationMsg"
+                    th:if="${msg} != null" 
+                    th:text="${msg}"
+                    th:classappend="${#fields.hasErrors('${cartaoCredito.*}') ? 'msg-server-error' : ''}"></span>
+                <!--END - MSG SERVER RESPONSE-->
+                        
+                <form 
+                    th:action="@{/cliente/pagamento/pagar}" 
+                    onsubmit="disableButtonOnSubmit('btn-pagar')" 
+                    method="POST" 
+                    th:object="${cartaoCredito}">
+                    <!--TOASTFY ONLY-->
+                    <input type="hidden" id="validationError" th:if="${validationError != null}" th:value="${validationError}"/>
+
+                    <label>Forma de Pagamento</label>
+                    <select th:field="*{formaPagamento}" th:classappend="${#fields.hasErrors('formaPagamento') ? 'error-input' : ''}">
+                        <option selected hidden value="">Selecionar</option>
+                        <option th:each="pagamento : ${T(br.com.bluefood.domain.pagamento.CartaoCredito.FormaPagamento).values()}" th:value="${pagamento}" th:text="${pagamento.legenda} +' - '+${#numbers.formatCurrency(carrinho.getPrecoTotal(true))}"></option>
+                    </select>
+                    <span class="error-input" th:if="${#fields.hasErrors('formaPagamento')}" th:errors="*{formaPagamento}"></span>
+
+                    <label>Nome (escrito no cartão)</label>
+                    <input 
+                        th:field="*{nomeCartao}"
+                        type="text" 
+                        placeholder="Ex: João A Morais"
+                        th:classappend="${#fields.hasErrors('nomeCartao') ? 'error-input' : ''}"/>
+                    <span class="error-input" th:if="${#fields.hasErrors('nomeCartao')}" th:errors="*{nomeCartao}"></span>
+
+                    <label>Número do cartão</label>
+                    <input 
+                        th:field="*{numero}"
+                        type="text" 
+                        inputmode="numeric"
+                        data-js="integer"
+                        placeholder="Ex: 999999999999"
+                        th:classappend="${#fields.hasErrors('numero') ? 'error-input' : ''}"/>
+                    <span class="error-input" th:if="${#fields.hasErrors('numero')}" th:errors="*{numero}"></span>
+
+                    <label>Validade</label>
+                    <div class="inputs-inline">
+                        <select th:field="*{mes}" th:classappend="${#fields.hasErrors('mes') ? 'error-input' : ''}">
+                            <option selected hidden value="">Mes</option>
+                            <option value="01">01</option>
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="06">06</option>
+                            <option value="07">07</option>
+                            <option value="08">08</option>
+                            <option value="09">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select>
+                        <select th:field="*{ano}" th:classappend="${#fields.hasErrors('ano') ? 'error-input' : ''}">
+                            <option selected hidden value="">Ano</option>
+                            <option value="2020">2020</option>
+                            <option value="2021">2021</option>
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                            <option value="2029">2029</option>
+                            <option value="2030">2030</option>
+                        </select>
+                    </div>
+                    <span class="error-input" th:if="${#fields.hasErrors('mes')}" th:errors="*{mes}"></span>
+                    <span class="error-input" th:if="${#fields.hasErrors('ano')}" th:errors="*{ano}"></span>
+
+                    <label>Código de Segurança</label>
+                    <input 
+                        th:field="*{codigoSeguranca}"
+                        type="text" 
+                        inputmode="numeric"
+                        data-js="integer"
+                        placeholder="Ex: 758"
+                        th:classappend="${#fields.hasErrors('codigoSeguranca') ? 'error-input' : ''}"/>
+                    <span class="error-input" th:if="${#fields.hasErrors('codigoSeguranca')}" th:errors="*{codigoSeguranca}"></span>
+
+                    <label>CPF/CNPJ do proprietário do cartão</label>
+                    <input 
+                        th:field="*{cpfCnpj}"
+                        data-js="integer"
+                        inputmode="numeric"
+                        type="text" 
+                        placeholder="Ex: 99999999999"
+                        th:classappend="${#fields.hasErrors('cpfCnpj') ? 'error-input' : ''}"/>
+                    <span class="error-input" th:if="${#fields.hasErrors('cpfCnpj')}" th:errors="*{cpfCnpj}"></span>
+
+                    <input type="submit" value="Realizar pagamento" id="btn-pagar"/>
+                </form>
+                <ul class="links" style="text-align: center;">
+                    <li>
+                        <a th:href="${#authentication.principal} == 'anonymousUser' ? @{/} : @{/cliente/carrinho/visualizar}">
+                            <i class="material-icons btn-search">&#xe31b;</i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </main>
+    </div>
+    <div layout:fragment="othersImports">
+        <script th:src="@{/js/inputMasks.js}"></script>
+        <script th:src="@{/js/toast.js}"></script>
+    </div>
+</body>
+</html>

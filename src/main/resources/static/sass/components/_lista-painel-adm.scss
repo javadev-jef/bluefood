@@ -1,0 +1,122 @@
+section.painel-options
+{
+    max-height: calc(100vh - 165px);
+
+    div.option
+    {
+        border-top: 1px #D8D8D8 dashed;
+        width: 100%;
+        height: 72px;
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        color: #333333;
+
+        &:hover
+        {
+            div.descrition
+            {
+                background-color: #F2F2F2;
+            }
+        }
+
+        &:last-of-type
+        {
+            border-bottom: 1px #D8D8D8 dashed;
+        }
+
+        div.descrition
+        {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            background-color: #f9fafb;
+            color: #4D4D4D;
+
+            span.option-title
+            {
+                font-weight: bold;
+            }
+
+            span.option-legend
+            {
+                opacity: 0.6;
+            }
+        }
+
+        i.option-ico
+        {
+            border-right: 1px #D8D8D8 dashed;
+            width: 72px;
+            text-align: center;
+            line-height: 72px;
+            font-size: 25pt;
+            opacity: 0.8;
+        }
+    }
+}
+
+//DESKTOP VERSION
+@media screen and (min-width: 768px)
+{
+    section.painel-options
+    {
+        display: flex;
+        justify-content: center;
+
+        .mCSB_container
+        {
+            display: flex;
+        }
+        div.option
+        {
+            cursor: pointer;
+            border-radius: 6px;
+            border: 1px #D8D8D8 solid;
+            width: 90px;
+            height: 90px;
+            display: flex;
+            flex-direction: column;
+
+            &:hover
+            {
+                box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+            }
+
+            &:not(:last-of-type)
+            {
+                margin-right: 10px;
+            }
+
+            &:last-of-type
+            {
+                border-bottom: 1px #D8D8D8 solid;
+            }
+
+            div.descrition
+            {
+                border-bottom-left-radius: 6px;
+                border-bottom-right-radius: 6px;
+                font-size: 12px;
+                text-align: center;
+                padding: 0;
+                height: 40px !important; 
+
+                .option-legend
+                {
+                    display: none;
+                }
+            }
+
+            i.option-ico
+            {
+                border:none;
+                height: 50px !important;
+                line-height: 50px;
+            }
+        }
+    }
+}

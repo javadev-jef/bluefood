@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html
+    lang="pt-BR"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}" 
+    th:with="link=@{/restaurante/home}, search='noshow', screen='restaurante'">
+<head>
+    <!--DATEPICKER STYLE-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1/dist/css/datepicker.min.css"/>
+</head>
+<body onload="onloadRelatorioPage()">
+    <div layout:fragment="content">
+        <main class="container">
+            <h4 class="titulo">Relatório de Itens de Pedido</h4>
+
+            <!--FILTER OPTIONS-->
+            <fieldset>
+                <legend>Filtros</legend>
+                <form class="form-h-scroll-fieldset" th:object="${filter}" th:action="@{/restaurante/relatorio/itens}" method="GET">
+                    <select id="OptionFilter" onchange="changeFilterRelatorio(this)" th:field="*{optionFilter}" class="input-filter">
+                        <option th:each="option : ${T(br.com.bluefood.domain.pedido.RelatorioItemFilter.OptionsFilter).values()}"
+                            th:value="${option}" 
+                            th:text="${option.legenda}"></option>
+                    </select>
+                    <input 
+                        th:field="*{itemId}" 
+                        type="text" 
+                        inputmode="numeric"
+                        placeholder="ex: 2" 
+                        class="numero-filter input-filter"
+                        autocomplete="off"
+                        style="min-width: 74px;width: 8vw;"/>
+                    <div id="rangePicker" style="display: inline-flex;">
+                        <input 
+                            th:field="*{dataInicial}" 
+                            name="start"
+                            type="text" 
+                            class="periodo-filter input-filter"
+                            placeholder="Data Inicial"
+                            autocomplete="off"
+                            style="min-width: 100px;width: 8vw;" readonly/>
+                        <input 
+                            th:field="*{dataFinal}" 
+                            name="end"
+                            type="text" 
+                            class="periodo-filter input-filter"
+                            placeholder="Data Final"
+                            autocomplete="off"
+                            style="min-width: 100px;width: 8vw;" readonly/>
+                    </div>
+                    <input type="submit" value="Buscar"/>
+                </form>
+            </fieldset>
+            <!--END - FILTER OPTIONS-->
+
+            <!--LIST ITEMS-->
+            <table style="margin-top:10px" class="table-relatorio">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Item</th>
+                        <th>Qtd</th>
+                        <th>Faturamento</th>
+                    </tr>
+                </thead>
+                <tr th:each="item : ${itensCalculados}">
+                    <td>
+                        <a th:text="${item.id}"></a>
+                    </td>
+                    <td th:text="*{item.nome}"></td>
+                    <td th:text="*{item.quantidade}"></td>
+                    <td th:text="*{#numbers.formatCurrency(item.valor)}"></td>
+                </tr>
+                <tr th:if="${itensCalculados == null || itensCalculados.size() == 0}" class="tabela-vazia">
+                    <td colspan="5">Nenhum registro encontrado</td>
+                </tr>
+            </table>
+            <!--END - LIST ITEMS-->
+        </main>
+    </div>
+    <div layout:fragment="othersImports">
+        <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1/dist/js/datepicker-full.min.js"></script><!--DATE-PICKER-->
+        <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1/dist/js/locales/pt-BR.js"></script><!--DATE-PICKER TRANSLATE-->
+        <!--DATE-PICKER CONFIGS-->
+        <script>
+            const elem = document.getElementById('rangePicker');
+            const rangepicker = new DateRangePicker(elem, 
+            {
+                clearBtn: true,
+                todayBtn: true,
+                todayBtnMode: 1,
+                autohide: true,
+                allowOneSidedRange: true,
+                format: "dd/mm/yyyy",
+                language: "pt-BR"
+            }); 
+        </script>
+    </div>
+</body>
+</html>

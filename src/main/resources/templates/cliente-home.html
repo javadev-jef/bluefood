@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html
+    lang="pt-BR"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}" th:with="link=@{/cliente/home}">
+<head>
+    <title>Bluefood 2.0 - Home</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <main class="container">
+            <!--SLIDER RESTAURANT BANNER-->
+            <h4 class="titulo">Restaurantes</h4>
+            <section class="banners-restaurante">
+                <div class="banners-restaurante-flex">
+                    <div th:each="banner : ${bannersRestaurantes}" class="banner-restaurante"
+                         th:onclick="'location.href=\'' + @{/cliente/restaurante} + '?idRestaurante='+${banner[0]}+'\';'">
+                        <div 
+                            th:style="'background-image: url('+@{/images/remote/banner-restaurante/}+${banner[1]}+')'"
+                            class="banner">
+                        </div>
+                    </div>
+                </div>
+                <!--SLIDER NAVIGATION-->
+                <i class="material-icons btn-next-slick btn-next-restaurante-slick">&#xe409;</i>
+                <i class="material-icons btn-prev-slick btn-prev-restaurante-slick">&#xe408;</i>
+            </section>
+            <!--END - SLIDER RESTAURANT BANNER-->
+
+            <!--SLIDER RESTAURANT CATEGORY-->
+            <h4 class="titulo">Categorias</h4>
+            <section class="categorias-restaurante">
+                <form id="formComida" th:action="@{/cliente/search}" method="GET" th:object="${searchFilter}">
+                    <input class="searchType" type="hidden" th:field="*{searchType}"/>
+                    <input class="idCategoria" type="hidden" th:field="*{idCategoria}"/> 
+                    <input class="descCategoria" type="hidden" th:field="*{descCategoria}">
+                    <div class="categorias-restaurante-flex"> 
+                        <div class="categoria-restaurante" th:each="categoria : ${categorias}" th:onclick="'searchRest(this, '+${categoria.id}+', \'formComida\')'">
+                            <div th:style="'background-image: url(' + @{/images/remote/categoria-comidas/} + ${categoria.urlImagem} +')'"
+                                class="categoria"></div>
+                            <span th:text="${categoria.descricao}" class="categoria-text"></span>
+                        </div>
+                    </div>
+                </form>
+                <!--SLIDER NAVIGATION-->
+                <i class="material-icons btn-next-slick btn-next-comida-slick">&#xe409;</i>
+                <i class="material-icons btn-prev-slick btn-prev-comida-slick">&#xe408;</i>
+            </section>
+            <!--END - SLIDER RESTAURANT CATEGORY-->
+
+            <!--LAST ORDERS-->
+            <h4 class="titulo">Ultimos Pedidos</h4>
+            <span th:if="${pedidos.size() == 0}" style="margin-left: 8px;">Não existe nenhum pedido anterior</span>
+            <section class="lista-pedidos" id="lista-pedidos">
+                <div class="pedido" th:each="pedido : ${pedidos}" 
+                     th:ondblclick="'location.href=\''+@{/cliente/pedido/view}+'?pedidoId='+${pedido.id}+'\';'">
+                    <div class="data-pedido">
+                        <span th:text="${pedido.getDayOfMonth()}"></span>
+                        <span th:text="${pedido.getShortMonthName()}"></span>
+                    </div>
+                    <div class="detalhes-pedido">
+                        <strong class="nome-restaurante" th:text="${pedido.getFormattedId()}+' - '+${pedido.restaurante.razao}"></strong>
+                        <ul class="itensPedido">
+                            <li>
+                                <strong>Total:</strong>
+                                <span th:text="${#numbers.formatCurrency(pedido.total)}"></span>
+                                <span th:text="' - '+${pedido.itens.size() > 1 ? pedido.itens.size() + ' itens' : pedido.itens.size() + ' item'}"></span>
+                            </li>
+                            <li>
+                                <span class="status-pedido">
+                                    <strong>Status:</strong>
+                                    <span th:text="${pedido.status.descricao}"></span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                    <a class="btn-pedido" th:onclick="'location.href=\''+@{/cliente/pedido/view}+'?pedidoId='+${pedido.id}+'\';'">Detalhar</a>
+                </div>
+            </section>
+            <!--END - LAST ORDERS-->
+        </main>
+    </div>
+    <div layout:fragment="othersImports">
+        <script th:src="@{/js/slick.js}"></script> <!--SLICK SLIDER-->
+        <script th:src="@{/js/sliders.js}"></script> <!--SLIDERS CONTROLLER-->
+    </div>
+</body>
+</html>

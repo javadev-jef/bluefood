@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html
+    lang="pt-BR"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}" 
+    th:with="link=${#authorization.expression('hasRole(''CLIENTE'')')} ? @{/cliente/home} : @{/restaurante/home}, search='noshow', screen=${#authorization.expression('hasRole(''RESTAURANTE'')')} ? 'restaurante' : 'cliente'">
+
+<body>
+    <div layout:fragment="content">
+        <main class="container">
+            <div class="errorPageContainer">
+                <div class="imageError">
+                    <img th:src="@{/images/error/400.png}">
+                </div>
+                <div class="msgErrorPage">
+                    <h1>400 Bad Request</h1>
+                    <span>Solicitação inválida</span>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html
+    lang="pt-BR"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}" 
+    th:with="link=@{/restaurante/home}, search='noshow', screen='restaurante'">
+<head>
+    <!--DATEPICKER STYLE-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1/dist/css/datepicker.min.css"/>
+</head>
+<body onload="onloadRelatorioPage()">
+    <div layout:fragment="content">
+        <main class="container">
+            <h4 class="titulo">Relatório de Pedidos</h4>
+
+            <!--FILTER OPTIONS-->
+            <fieldset>
+                <legend>Filtros</legend>
+                <form class="form-h-scroll-fieldset" th:object="${filter}" th:action="@{/restaurante/relatorio/pedidos}" method="GET">
+                    <select id="OptionFilter" onchange="changeFilterRelatorio(this)" th:field="*{optionFilter}" class="input-filter">
+                        <option th:each="option : ${T(br.com.bluefood.domain.pedido.RelatorioPedidoFilter.OptionsFilter).values()}"
+                            th:value="${option}" 
+                            th:text="${option.legenda}"></option>
+                    </select>
+                    <input 
+                        th:field="*{pedidoId}" 
+                        type="text" 
+                        inputmode="numeric"
+                        placeholder="ex: 0001" 
+                        class="numero-filter input-filter"
+                        autocomplete="off"
+                        style="min-width: 74px;width: 8vw;"/>
+                    <div id="rangePicker" style="display: inline-flex;">
+                        <input 
+                            th:field="*{dataInicial}" 
+                            name="start"
+                            type="text" 
+                            inputmode="date"
+                            class="periodo-filter input-filter"
+                            placeholder="Data Inicial"
+                            autocomplete="off"
+                            style="min-width: 100px;width: 8vw;" readonly/>
+                        <input 
+                            th:field="*{dataFinal}" 
+                            name="end"
+                            type="text" 
+                            class="periodo-filter input-filter"
+                            placeholder="Data Final"
+                            autocomplete="off"
+                            style="min-width: 100px;width: 8vw;" readonly/>
+                    </div>
+                    <input type="submit" value="Buscar"/>
+                </form>
+            </fieldset>
+            <!--END - FILTER OPTIONS-->
+
+            <!--ORDER LIST-->
+            <table style="margin-top:10px;" class="table-relatorio">
+                <thead>
+                    <tr>
+                        <th>Pedido</th>
+                        <th>Data</th>
+                        <th hidden>Cliente</th>
+                        <th hidden>Endereço</th>
+                        <th>Qtd</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tr th:each="pedido : ${pedidos}">
+                    <td>
+                        <a th:text="${pedido.formattedId}" th:onclick="'location.href=\''+@{/restaurante/pedido}+'?pedidoId='+${pedido.id}+'\';'"></a>
+                    </td>
+                    <td th:text="*{pedido.getDateFormatted()}"></td>
+                    <td class="justify-text" hidden th:text="*{pedido.cliente.nome}"></td>
+                    <td class="justify-text" hidden th:text="*{pedido.cliente.endereco.logradouro}"></td>
+                    <td th:text="*{pedido.itens.size()}"></td>
+                    <td th:text="*{#numbers.formatCurrency(pedido.total)}"></td>
+                </tr>
+                <tr th:if="${pedidos == null || pedidos.size() == 0}" class="tabela-vazia">
+                    <td colspan="6">Nenhum registro encontrado</td>
+                </tr>
+            </table>
+            <!--END - ORDER LIST-->
+        </main>
+    </div>
+    <div layout:fragment="othersImports">
+        <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1/dist/js/datepicker-full.min.js"></script><!--DATE-PICKER-->
+        <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1/dist/js/locales/pt-BR.js"></script><!--DATE-PICKER TRANSLATE-->
+        <!--DATE-PICKER CONFIGS-->
+        <script>
+            const elem = document.getElementById('rangePicker');
+            const rangepicker = new DateRangePicker(elem, 
+            {
+                clearBtn: true,
+                todayBtn: true,
+                todayBtnMode: 1,
+                autohide: true,
+                allowOneSidedRange: true,
+                format: "dd/mm/yyyy",
+                language: "pt-BR"
+            }); 
+        </script>
+    </div>
+</body>
+</html>

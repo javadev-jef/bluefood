@@ -1,0 +1,327 @@
+textarea,
+input[type=text], 
+input[type=password],
+input[type=date], select
+{
+    outline: none;
+    border-radius: 4px;
+    border: 2px rgba($color_primary_dark, 0.7) solid;
+    background: rgba(255, 255, 255, 0.5);
+
+    &:not(textarea)
+    {
+        height: 36px !important;
+
+        &:not(select)
+        {
+          text-indent: 8px;
+        }
+    }
+
+    &.input-filter
+    {
+      border:1px #D8D8D8 solid;
+    }
+
+    &:disabled
+    {
+      border:2px rgba(189, 189, 189, 1) solid !important;
+    }
+}
+
+select
+{
+  padding: 0px 4px !important;
+}
+
+// Multiselect library
+div.ss-main
+{
+  background: rgba(255, 255, 255, 0.5);
+  border: 2px rgba($color_primary_dark, 0.7) solid;
+  border-radius: 4px;
+
+  div.ss-multi-selected
+  {
+    border: none;
+    min-height: 34px;
+    background: none;
+
+    div.ss-values span.ss-disabled
+    {
+      color: #333333 !important;
+    }
+    div.ss-value
+    {
+      color: #333 !important;
+      background-color: rgba($color_primary, 0.7) !important;
+      height: 28px;
+    }
+  }
+
+  div.ss-search
+    {
+      input[type=search]:focus
+      {
+        box-shadow: none !important;
+      }
+    }
+}
+
+textarea
+{
+    padding: 10px !important;
+}
+
+input[type=button], input[type=submit], input[type=reset]
+{
+    padding-left: 8px;
+    padding-right: 8px;
+    height: 38px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    color: #ffffff;
+
+    &:not([type=reset])
+    {
+      background: $color_primary;
+      border: 2px $color_primary_dark solid;
+    }
+
+    &:not(:disabled):not([type=reset]):hover
+    {
+        background: rgba($color_primary, 0.9);
+        border: 2px rgba($color_primary_dark, 0.9) solid;
+    }
+
+    &:disabled
+    {
+      opacity:0.3 !important;
+      cursor: default;
+    }
+}
+
+input[type=reset]
+{
+    background-color: rgba(216, 216, 216, 1);
+    border:2px rgba(189, 189, 189, 1) solid;
+
+    &:hover
+    {
+        background-color: rgba(216, 216, 216, 0.9);
+        border:2px rgba(189, 189, 189, 0.9) solid;
+    }
+}
+
+div.form-content
+{
+    padding: 12px;
+    animation-name: fade;
+    animation-duration: 500ms;
+
+    div.title-login
+    {
+        font-size: 12px;
+        color: rgba(51, 51, 51, 0.9);
+        margin-bottom: 20px;
+    }
+
+    form
+    {
+        display: flex;
+        flex-direction: column;
+
+        label 
+        {
+            font-size: 14px;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 4px;
+            margin-top: 10px;
+            color: rgba(51, 51, 51, 0.9);
+        }
+
+        div.group-buttons-inline
+        {
+          margin-top: 20px;
+          display: flex;
+          input
+          {
+            flex: 1;
+            margin-top: 0;
+
+            &:not(:last-of-type)
+            {
+              margin-right: 10px;
+            }
+          }
+        }
+
+        input[type=file]
+        {
+            display: none;
+        }
+  
+        label.input-file
+        {
+            margin-bottom: 0 !important;
+            margin-top: 0 !important;
+            border: 2px rgba($color_primary_dark, 0.7) dashed;
+            text-align: center;
+            line-height: 36px;
+            color: rgba(51, 51, 51, 0.5);
+            cursor: pointer;
+            height: 36px;
+            border-radius: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        div.inputs-inline
+        {
+            display: flex;
+
+            >select
+            {
+              flex: 1;
+              margin-right:10px;
+
+              &:last-of-type
+              {
+                  margin-right: 0;
+              }
+            }
+        }
+
+        input[type="submit"] 
+        {
+            margin-top: 20px;
+        }
+    }
+
+    ul.links
+    {
+        list-style-type: none;
+        padding: 0;
+        margin-top:10px;
+        > li a
+        {
+            margin-top: 4px;
+            font-size: 12px;
+            color: rgba($color_primary_dark, 1);
+            text-decoration: underline;
+
+            &:hover
+            {
+              cursor: pointer;
+              color: rgba($color_primary_dark, 0.8);
+            }
+        }
+    }
+}
+
+span.error-input
+{
+  font-size: 12px;
+  padding: 2px 2px;
+  color: red;
+}
+
+input.error-input, select.error-input, label.error-input, div.ss-main.error-input
+{
+  border-color: red !important;
+}
+
+div.input-counter
+{
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  input[type=text]
+  {
+    width:50px;
+    border: 2px rgba(0, 182, 255, 0.4) solid;
+    border-left: none;
+    border-right:none;
+    text-align: center;
+    border-radius: 0;
+    text-indent: 0;
+    font-weight: bold;
+  }
+
+  i.material-icons
+  {
+    font-size: 14px;
+    cursor: pointer;
+    height: 38px;
+    padding-left: 4px;
+    padding-right: 4px;
+    line-height: 36px;
+    border: 2px rgba(0, 182, 255, 0.4) solid;
+    background: rgba(0, 211, 241, 0.7);
+    color:#333333;
+    font-weight: bold;
+
+    &:first-of-type
+    {
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
+    }
+
+    &:last-of-type
+    {
+      border-top-right-radius: 6px;
+      border-bottom-right-radius: 6px;
+    }
+
+    &:hover
+    {
+      background: rgba(0, 211, 241, 0.5);
+    }
+  }
+}
+
+@media screen and (min-width: 768px)
+{
+  div.form-content
+  {
+      background: rgba(255, 255, 255, 0.7);
+      box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.05), 0px 4px 16px rgba(0, 0, 0, 0.06);
+      border-radius: 8px;
+      margin: 20px auto;
+      width: 500px;
+      padding: 36px;
+
+      div.title-login
+      {
+          font-size: initial;
+      }
+  }
+
+  div.input-counter
+  {
+    border: none;
+
+    input[type=text]
+    {
+      border: 2px rgba(0, 182, 255, 0.4) solid;
+      border-left: none;
+      border-right:none;
+    }
+
+    i.material-icons
+    {
+      line-height: 36px;
+      border: 2px rgba(0, 182, 255, 0.4) solid;
+      background: rgba(0, 211, 241, 0.7);
+      color: #FFFFFF;
+    }
+  }
+}

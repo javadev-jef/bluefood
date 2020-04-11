@@ -1,0 +1,48 @@
+//BANNER SLIDER
+section.banners-restaurante
+{
+    position: relative;
+    animation-name: fade-opacity;
+    animation-duration: 1s;
+
+    div.banners-restaurante-flex
+    {
+        display: flex;
+        background-color: #F2F2F2;
+
+        div.banner-restaurante
+        {
+            display: flex !important;
+            padding-right: 4px;
+            cursor: pointer;
+
+            div.banner
+            {
+                background-repeat: no-repeat;
+                background-size: contain;
+                background-position: center;
+                width: 360px;
+                max-height: 200px;
+                height: 100vh;
+            }
+        }
+    }
+}
+
+// DESKTOP VERSION
+@media screen and (min-width: 768px)
+{
+    section.banners-restaurante
+    {
+        div.banners-restaurante-flex
+        {
+            div.banner-restaurante
+            {
+                div.banner
+                {
+                    width: 420px;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}"
+    th:with="link=@{/cliente/home}, screen='carrinho', search='noshow'">
+<head>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"/>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+</head>
+<body>
+    <div layout:fragment="content">
+        <main class="container center-80">
+            <h4 class="titulo">
+                <label th:text="'Pedido '+${pedido.getFormattedId()}"></label> 
+                <span th:text="'- '+${pedido.status.descricao}"></span>
+            </h4>
+
+            <!--LIST ITEMS / MOBILE-->
+            <section class="itens-pedido mCustomScrollbar" data-mcs-theme="minimal-dark">
+                <section class="lista-produtos-pedido">
+                    <div class="produto" th:each="item : ${pedido.itens}">
+                        <div class="imagem-produto">
+                            <img th:src="@{/images/remote/comida/} + ${item.itemCardapio.imagem}"/>
+                        </div>
+                        <div class="detalhes-produto">
+                            <div class="descricao-produto">
+                                <h4 th:text="${item.itemCardapio.nome}"></h4>
+                                <div class="group-buttons-inline">
+                                    <span th:text="${item.quantidade + 'x - ' + #numbers.formatCurrency(item.preco)}"></span>
+                                    <span class="valor-produto">
+                                        <strong th:text="${#numbers.formatCurrency(item.precoCalculado)}"></strong>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <input 
+                    type="button" 
+                    value="Refazer Pedido"
+                    th:onclick="'location.href=\''+@{/cliente/carrinho/refazerCarrinho}+'?pedidoId='+${pedido.id}+'\';'"/>
+                <div class="total-pedido">
+                    <div>
+                        <strong>Entrega:</strong>
+                        <span th:text="${#numbers.formatCurrency(pedido.taxaEntrega)}"></span>
+                    </div>
+                    <div>
+                        <strong>Pago:</strong>
+                        <span th:text="${#numbers.formatCurrency(pedido.total)}"></span>
+                    </div>
+                </div>
+            </section>
+            <!--END - LIST ITEMS / MOBILE-->
+
+            <!--LIST ITEMS / DESKTOP-->
+            <section class="itens-pedido-table">
+
+                <!--TOASTFY ONLY-->
+                <span th:text="${msg}" id="validationMsg" hidden></span>
+                
+                <input type="hidden" id="validationError" th:if="${validationError != null}" th:value="${validationError}"/>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Quantidade</th>
+                            <th>Valor Unitário</th>
+                            <th>Sub Total</th>
+                        </tr>
+                    </thead>
+                    <tr th:each="item : ${pedido.itens}">
+                        <td class="produto-info">
+                            <div class="img-produto">
+                                <img th:src="@{/images/remote/comida/} + ${item.itemCardapio.imagem}"/>
+                            </div>
+                            <div class="descricao">
+                                <span th:text="${item.itemCardapio.nome}"></span>
+                                <span th:text="'OBS: '+${item.observacoes}"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <span th:text="${item.quantidade}">2</span>
+                        </td>
+                        <td th:text="${#numbers.formatCurrency(item.preco)}"></td>
+                        <td th:text="${#numbers.formatCurrency(item.precoCalculado)}"></td>
+                    </tr>
+                    <tr th:if="${pedido.itens.size() == 0}">
+                        <td colspan="4">Pedido não possui itens</td>
+                    </tr>
+                </table>
+                <div class="bottom-carrinho">
+                    <div class="button-group">
+                        <input 
+                            type="button" 
+                            value="Refazer Pedido"
+                            th:onclick="'location.href=\''+@{/cliente/carrinho/refazerCarrinho}+'?pedidoId='+${pedido.id}+'\';'"/>
+                    </div>
+                    <ul class="infos-total">
+                        <li>
+                            <div class="taxaEnterga">
+                                <strong>Entrega</strong>
+                                <span th:text="${#numbers.formatCurrency(pedido.taxaEntrega)}"></span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="totalCarrinho" title="Valor total + taxa de entrega">
+                                <strong>Total</strong>
+                                <span th:text="${#numbers.formatCurrency(pedido.total)}"></span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+            <!--END - LIST ITEMS / DESKTOP-->
+        </main>
+    </div>
+    <div layout:fragment="othersImports">
+        <script th:src="@{/js/toast.js}"></script>
+        <script>showToastPage('validationMsg')</script>
+    </div>
+</body>
+</html>

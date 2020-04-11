@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Jefersom Martins"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Bluefood 2.0</title>
+    <!--SLICK SLIDER STYLE-->
+    <link rel="stylesheet" th:href="@{/css/slick.min.css}" />
+    <!--APPLICATION STYLE-->
+    <link rel="stylesheet" th:href="@{/css/style-bluefood.min.css}" />
+    <!--MATERIAL ICONS STYLE-->
+    <link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone" rel="stylesheet" />
+    <!--JQUERY SCROLLER STYLE-->
+    <link rel="stylesheet" th:href="@{/css/jquery.mCustomScrollbar.min.css}" />
+    <link rel="shortcut icon" th:href="@{/images/icons/favicon.ico}" type="image/x-icon">
+    <!--VIEW CONTROLLER JS-->
+    <script th:src="@{/js/viewController.js}"></script>
+</head>
+
+<body>
+    <!--HEADER PAGE-->
+    <header class="header-page" th:if="${#authentication.principal != 'anonymousUser'}">
+        <nav>
+            <a th:href="${link} == null ? @{/} : ${link}" class="logo">BLUEFOOD 2.0</a>
+            <!--INPUT SEARCH-->
+            <div class="search" onkeypress="searchRestKey(event, 'formBusca')" th:if="${search} != 'noshow'">
+                <form id="formBusca" th:action="@{/cliente/search}" method="GET" th:object="${searchFilter}">
+                    <input class="searchType" type="hidden" th:field="*{searchType}"/>
+                    <input class="idCategoria" type="hidden" th:field="*{idCategoria}"/>
+                    <div class="input-search">
+                        <input type="text" th:field="*{texto}" inputmode="search" placeholder="Pesquise por algum restaurante" />
+                        <i class="material-icons btn-search" onclick="searchRest(null, null, 'formBusca')">&#xe8b6;</i>
+                    </div>
+                </form>
+            </div>
+            <!--END - INPUT SEARCH-->
+            
+            <!--HEADER MENU-->
+            <ul class="header-links" th:if="${#authentication.principal != 'anonymousUser'}">
+                <li th:title="${session.carrinho != null ? session.carrinho.getTooltip() : ''}">
+                    <a th:onclick="'location.href=\''+@{/cliente/carrinho/visualizar}+'\';'" th:if="${screen != 'restaurante'}">
+                        <i class="material-icons">&#xe8cc;</i>
+                        <span class="badge" th:if="${session.carrinho != null && session.carrinho.itens.size() > 0}" th:text="${session.carrinho.itens.size()}"></span>
+                    </a>
+                </li>
+                <li>
+                    <a th:onclick="${screen != 'restaurante'} ? @{location.href='/cliente/edit'} : @{location.href='/restaurante/edit'}">
+                        <span>Minha Conta</span>
+                    </a>
+                </li>
+            </ul>
+            <!--END - HEADER MENU-->
+
+            <!--DELIVERY ICON ANIMATED-->
+            <div class="icon-delivery">
+                <img th:src="@{/images/food/delivery.png}" alt=""/>
+            </div>
+            <!--END DELIVERY ICON ANIMATED-->
+        </nav>
+
+        <!--DETAILS USER LOGGED-->
+        <div class="usuario-logged" th:if="${#authentication.principal != 'anonymousUser'}">
+            <div class="details">
+                <ul>
+                    <li>
+                        <strong th:if="${screen != 'restaurante'}">Endereço de Entrega:</strong>
+                        <strong th:if="${screen == 'restaurante'}">Meu Endereço:</strong>
+                    </li>
+                    <li><span th:text="${#authentication.principal.usuario.endereco.logradouro}"></span></li>
+                </ul>
+                <ul>
+                    <li><strong>Data:</strong></li>
+                    <li><span th:text="${T(br.com.bluefood.utils.StringUtils).getDate()}"></span></li>
+                </ul>
+                <ul>
+                    <li>
+                        <span>Olá, </span>
+                        <strong th:text="${#authentication.principal.usuario.nome}" th:if="${screen != 'restaurante'}"></strong>
+                        <strong th:text="${#authentication.principal.usuario.razao}" th:if="${screen == 'restaurante'}"></strong>
+                    </li>
+                </ul>
+                <ul>
+                    <li><a th:onclick="@{location.href='/logout'}">Sair</a></li>
+                </ul>
+            </div>
+        </div>
+        <!--END - DETAILS USER LOGGED-->
+    </header>
+    <!--END - HEADER PAGE-->
+
+    <!--ROOT CONTENT-->
+    <div layout:fragment="content" id="root"></div>
+    <!--END - ROOT CONTENT-->
+
+    <!--NAVIGATION MOBILE-->
+    <nav class="nav-mobile" th:if="${#authentication.principal != 'anonymousUser' && navmobile != 'noshow'}">
+        <a th:href="${link} == null ? @{/} : ${link}" class="nav-link">
+            <i class="material-icons nav-icon">&#xe88a;</i>
+            <span class="nav-text">Home</span>
+        </a>
+        <a th:href="@{/cliente/carrinho/visualizar}" class="nav-link" th:if="${screen != 'restaurante'}">
+            <i class="material-icons nav-icon">&#xe8cc;</i>
+            <span 
+                class="badge" 
+                th:if="${session.carrinho != null && session.carrinho.itens.size() > 0}" 
+                th:text="${session.carrinho.itens.size()}"></span>
+            <span class="nav-text">Carrinho</span>
+        </a>
+        <a th:href="@{/restaurante/home-pedidos} + '#lista-pedidos'" class="nav-link" th:if="${screen == 'restaurante'}">
+            <i class="material-icons nav-icon">&#xe241;</i>
+            <span class="nav-text">Pedidos</span>
+        </a>
+        <a th:href="${screen != 'restaurante'} ? @{/cliente/edit} : @{/restaurante/edit}" class="nav-link">
+            <i class="material-icons nav-icon">&#xe55a;</i>
+            <span class="nav-text">Perfil</span>
+        </a>
+        <a th:href="@{/logout}" class="nav-link">
+            <i class="material-icons nav-icon">&#xe879;</i>
+            <span class="nav-text">Sair</span>
+        </a>
+    </nav>
+    <!--END - NAVIGATION MOBILE-->
+
+    <!--FOOTER PAGE-->
+    <footer th:if="${#authentication.principal != 'anonymousUser'}" id="footer">
+        <div class="details">
+            <div class="resume">
+                <h4 class="titulo">Quem somos nós</h4>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ipsum dignissimos laborum cum fugiat. Fuga
+                deleniti vel ullam consequatur maiores.
+            </div>
+            <div class="technologies">
+                <h4 class="titulo">Tecnologias Base</h4>
+                <ul>
+                    <li>Jquery</li>
+                    <li>JavaScript</li>
+                    <li>CSS</li>
+                    <li>HTML</li>
+                    <li>Java + Spring</li>
+                </ul>
+            </div>
+            <div class="about">
+                <h4 class="titulo">Sobre</h4>
+                <ul>
+                    <li>Privacidade</li>
+                    <li>Pagamentos</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright"> 
+            <span>© Copyright <span th:text="${yearFooter}"></span> bluefoodv.com.br - All Rights Reserved</span>
+            <span>Developed by Jefersom Martins</span>
+        </div>
+    </footer>
+    <!--END - FOOTER PAGE-->
+
+    <!--PAGE IMPORTS-->
+    <script th:src="@{/js/jquery/jquery.js}"></script> <!--JQUERY-->
+    <script th:src="@{/js/jquery/jquery.mCustomScrollbar.concat.min.js}"></script> <!--JQUERY SCROLLER-->
+    <div layout:fragment="othersImports" id="imports"></div>
+    <!--END - PAGE IMPORTS-->
+</body>
+</html>

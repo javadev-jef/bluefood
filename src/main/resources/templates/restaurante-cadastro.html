@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html 
+    lang="pt-BR"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    layout:decorate="~{layout}" 
+    th:with="link=@{/restaurante/home}, search='noshow', screen='restaurante'">
+<head>
+    <!--SLIM-SELECT STYLE-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.25.0/slimselect.min.css" rel="stylesheet"/>
+    <!--SLIM SELECT SCRIPT-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.25.0/slimselect.min.js"></script>
+    <!--TOASTFY STYLE-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"/>
+    <!--TOASTFY SCRIPT-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <meta http-equiv="Refresh" th:attr="content=${'5; url='} + @{/logout}" th:if="${invalideSession}"/>
+</head>
+<body onload="renderAnimationFoods();showToastPage('validationMsg');loadInputFiles()" 
+    th:classappend="${!editMode} ? 'bg-blue-primary' : ''">
+    <div layout:fragment="content">
+        <main class="container">
+
+            <!--SIGN UP FORM-->
+            <div class="form-content">
+                <div class="title-login">
+                    <h1 th:text="${editMode} ? 'Meus Dados' : 'Cadastro de Restaurante'"></h1>
+                    <p>Pensou em comida, pensou em BlueFood!</p>
+                </div>
+
+                <!--MSG SERVER RESPONSE-->
+                <span 
+                    id="validationMsg"
+                    class="msg-server" 
+                    th:if="${msg} != null" 
+                    th:text="${msg}"
+                    th:classappend="${#fields.hasErrors('${restaurante.*}') ? 'msg-server-error' : ''}"></span>
+                <!--END - MSG SERVER RESPONSE-->
+
+                <form 
+                    enctype="multipart/form-data"
+                    method="POST" 
+                    th:onsubmit="${editMode} ? 'return confirmChangesUser();clearMasks()' : 'clearMasks();disableButtonOnSubmit(\'btn-cadastrar\')'" 
+                    th:action="${!editMode} ? @{/public/restaurante/save} : @{/restaurante/save}" 
+                    th:object="${restaurante}">
+
+                    <!--TOASTFY ONLY-->
+                    <input type="hidden" id="validationError" th:if="${validationError != null}" th:value="${validationError}"/>
+
+                    <input type="hidden" th:field="*{id}"/>
+                    <input type="hidden" th:field="*{endereco.id}"/>
+
+                    <label>Razão</label>
+                    <input 
+                        type="text" 
+                        th:field="*{razao}"
+                        placeholder="Meu Restaurante - EIRELE"
+                        th:classappend="${#fields.hasErrors('razao') ? 'error-input' : ''}" />
+                    <span class="error-input" th:if="${#fields.hasErrors('razao')}" th:errors="*{razao}"></span>
+
+                    <label>CNPJ</label>
+                    <input 
+                        type="text" 
+                        inputmode="numeric"
+                        placeholder="99999999999"
+                        data-js="cnpj"
+                        th:field="*{cnpj}"
+                        th:classappend="${#fields.hasErrors('cnpj') ? 'error-input' : ''}" />
+                    <span class="error-input" th:if="${#fields.hasErrors('cnpj')}" th:errors="*{cnpj}"></span>
+
+                    <label>E-mail</label>
+                    <input 
+                        type="text" 
+                        inputmode="email"
+                        placeholder="usuario@email.com"
+                        th:field="*{email}"
+                        th:classappend="${#fields.hasErrors('email') ? 'error-input' : ''}" />
+                    <span class="error-input" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+
+                    <label>Telefone</label>
+                    <input 
+                        type="text"
+                        inputmode="numeric"
+                        placeholder="Insira seu número de telefone"
+                        th:field="*{telefone}"
+                        data-js="telefone"
+                        th:classappend="${#fields.hasErrors('telefone') ? 'error-input' : ''}" />
+                    <span class="error-input" th:if="${#fields.hasErrors('telefone')}" th:errors="*{telefone}"></span>
+
+                    <label>Logradouro</label>
+                    <input 
+                        type="text" 
+                        placeholder="Rua do usuário"
+                        th:field="*{endereco.logradouro}"
+                        th:classappend="${#fields.hasErrors('endereco.logradouro') ? 'error-input' : ''}" />
+                    <span class="error-input" th:if="${#fields.hasErrors('endereco.logradouro')}" th:errors="*{endereco.logradouro}"></span>
+
+                    <label>Bairro</label>
+                    <input 
+                        type="text" 
+                        placeholder="Bairro"
+                        th:field="*{endereco.bairro}"
+                        th:classappend="${#fields.hasErrors('endereco.bairro') ? 'error-input' : ''}" />
+                    <span class="error-input" th:if="${#fields.hasErrors('endereco.bairro')}" th:errors="*{endereco.bairro}"></span>
+
+                    <label>Cidade</label>
+                    <input 
+                        type="text" 
+                        placeholder="Cidade"
+                        th:field="*{endereco.cidade}"
+                        th:classappend="${#fields.hasErrors('endereco.cidade') ? 'error-input' : ''}" />
+                    <span class="error-input" th:if="${#fields.hasErrors('endereco.cidade')}" th:errors="*{endereco.cidade}"></span>
+
+                    <label>CEP</label>
+                    <input 
+                        type="text" 
+                        inputmode="numeric"
+                        placeholder="Insira o cep da sua rua"
+                        data-js="cep"
+                        th:field="*{endereco.cep}"
+                        th:classappend="${#fields.hasErrors('endereco.cep') ? 'error-input' : ''}" />
+                    <span class="error-input" th:if="${#fields.hasErrors('endereco.cep')}" th:errors="*{endereco.cep}"></span>
+
+                    <label>Número</label>
+                    <input 
+                        type="text" 
+                        inputmode="text"
+                        placeholder="ex: 123A"
+                        th:field="*{endereco.numero}"
+                        th:classappend="${#fields.hasErrors('endereco.numero') ? 'error-input' : ''}" />
+                    <span class="error-input" th:if="${#fields.hasErrors('endereco.numero')}" th:errors="*{endereco.numero}"></span>
+
+                    <label>UF</label>
+                    <select th:field="*{endereco.uf}" th:classappend="${#fields.hasErrors('endereco.uf') ? 'error-input' : ''}" >
+                        <option selected hidden value="">Estado</option>
+                        <option th:each="estado : ${estados}" th:value="${estado.id}" th:text="${estado.sigla}"></option>
+                    </select>
+                    <span class="error-input" th:if="${#fields.hasErrors('endereco.uf')}" th:errors="*{endereco.uf}"></span>
+
+                    <label>Categoria</label>
+                    <select id="slim-select" th:field="*{categorias}" multiple="multiple" th:classappend="${#fields.hasErrors('categorias') ? 'error-input' : ''}" >
+                        <option th:each="categoria : ${categorias}" th:value="${categoria.id}" th:text="${categoria.descricao}"></option>
+                    </select>
+                    <div></div>
+                    <span class="error-input" th:if="${#fields.hasErrors('categorias')}" th:errors="*{categorias}"></span>
+
+                    <label>Taxa de Entrega</label>
+                    <input
+                        type="text" 
+                        inputmode="decimal"
+                        autocomplete="off"
+                        placeholder="0,00"
+                        pattern="(^\d+(\.|,)?\d+)$|(^\d)$"
+                        title="Ex: 5,32"
+                        th:field="*{taxaEntrega}"
+                        th:classappend="${#fields.hasErrors('taxaEntrega') ? 'error-input' : ''}" required/>
+                    <span class="error-input" th:if="${#fields.hasErrors('taxaEntrega')}" th:errors="*{taxaEntrega}"></span>
+
+                    <label>Tempo de Entrega (min)</label>
+                    <input 
+                        type="text" 
+                        inputmode="numeric"
+                        pattern="^[0-9]{1,3}"
+                        title="Somente números inteiros"
+                        autocomplete="off"
+                        placeholder="5"
+                        th:field="*{tempoEntregaBase}"
+                        th:classappend="${#fields.hasErrors('tempoEntregaBase') ? 'error-input' : ''}"/>
+                    <span class="error-input" th:if="${#fields.hasErrors('tempoEntregaBase')}" th:errors="*{tempoEntregaBase}"></span>
+
+                    <label>Logotipo</label>
+                    <label 
+                        for="logoFile"
+                        class="input-file"
+                        th:classappend="${#fields.hasErrors('logotipoFile') ? 'error-input' : ''}">Clique aqui para selecionar</label>
+                    <input type="file" id="logoFile" th:field="*{logotipoFile}" />
+                    <span class="error-input" th:if="${#fields.hasErrors('logotipoFile')}" th:errors="*{logotipoFile}"></span>
+
+                    <label>Banner</label>
+                    <label 
+                        for="bannerFile"
+                        class="input-file"
+                        th:classappend="${#fields.hasErrors('bannerFile') ? 'error-input' : ''}">Clique aqui para selecionar</label>
+                    <input type="file" id="bannerFile" th:field="*{bannerFile}"/>
+                    <span class="error-input" th:if="${#fields.hasErrors('bannerFile')}" th:errors="*{bannerFile}"></span>
+
+                    <label>Senha</label>
+                    <input 
+                        id="senha-restaurante"
+                        type="password" 
+                        th:disabled="${!restaurante.alterarSenha && editMode}"
+                        placeholder="Insira sua senha"
+                        th:field="*{senha}"
+                        th:classappend="${#fields.hasErrors('senha') ? 'error-input' : ''}" />
+                    <span class="error-input" id="span-senha-restaurante" th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}"></span>
+
+                    <input type="hidden" name="senha" value="*" id="senha-restaurante-hidden" th:if=${editMode}/>
+                    <label for="alterarSenha" th:if="${editMode}">
+                        <input type="checkbox" th:checked="*{alterarSenha}" onchange="enableInputSenha(this, 'senha-restaurante')" name="alterarSenha" id="alterarSenha"/>
+                        <span>Alterar senha?</span>
+                    </label>
+
+                    <input type="submit" value="Cadastrar" id="btn-cadastrar"/>
+                </form>
+                <ul class="links" style="text-align: center;">
+                    <li>
+                        <a th:href="${#authentication.principal} == 'anonymousUser' ? @{/} : @{/restaurante/home}">
+                            <i class="material-icons btn-search">&#xe31b;</i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!--END - SIGN UP FORM-->
+
+        </main>
+
+        <!--ANIMATED FOODS IMAGE-->
+        <ul class="foods"></ul>
+        <!--END - ANIMATED FOODS IMAGE-->
+    </div>
+    <div layout:fragment="othersImports">
+        <!--PLUING MULTI-SELECT-->
+        <script>
+            new SlimSelect(
+            {
+                select: '#slim-select',
+                placeholder:"Selecionar",
+                closeOnSelect: false
+            })
+        </script>
+        <script th:src="@{/js/renderAnimationFoods.js}"></script> <!--FOODS ANIMATION-->
+        <script th:src="@{/js/toast.js}"></script> <!--TOASTFY PLUGIN-->
+        <script th:src="@{/js/inputMasks.js}"></script> <!--INPUT MASKS-->
+    </div>
+</body>
+</html>

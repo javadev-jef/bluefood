@@ -1,0 +1,70 @@
+//FOOTER
+footer 
+{
+    display: none;
+}
+
+//DESKTOP VERSION
+@media screen and (min-width: 768px)
+{
+  // FOOTER CSS
+  footer 
+  {
+    background: $background_image_primary $color_primary;
+    border-top: 1px $color_primary_dark solid;
+    color: #ffffff;
+    display: flex !important;
+    flex-direction: column;
+    flex-shrink: 0;
+    clear: both;
+
+    .titulo
+    {
+      padding-left: 0;
+    }
+
+    ul li 
+    {
+      padding: 2px;
+    }
+
+    div.details 
+    {
+      display: flex;
+      padding: 20px;
+      width: 80%;
+      align-self: center;
+      font-size: 14px;
+    }
+
+    div.copyright 
+    {
+      padding-right: 20px;
+      padding-left: 20px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      background-color: rgba($color_primary, 0.4);
+      border-top: 1px rgba(0, 225, 226, 1) solid;
+      font-size: 12px;
+      justify-content: space-between;
+    }
+
+    div.about 
+    {
+      flex: 1;
+      text-align: justify;
+    }
+
+    div.technologies 
+    {
+      flex: 1;
+      padding: 0px 20px 0px 20px;
+    }
+
+    div.resume 
+    {
+      flex: 1;
+    }
+  }
+}

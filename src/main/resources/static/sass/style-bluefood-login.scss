@@ -1,0 +1,131 @@
+//IMPORTS
+@import "components/variables";
+@import "components/inputs";
+@import "components/animations";
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap");
+
+body
+{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+    font-family: "Roboto";
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+}
+
+span.copyright
+{
+    font-size: 11px;
+    text-align: center;
+    margin-top: 20px;
+}
+div.mainContainer
+{
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    div.form-content
+    {
+        box-shadow: none;
+
+        div.title-login
+        {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            span#app-name
+            {
+                display: none;
+            }
+        }
+
+        a 
+        {
+            text-align: right;
+            margin-top: 4px;
+            font-size: 12px;
+            color: rgba($color_primary_dark, 1);
+
+            &:hover 
+            {
+                color: rgba($color_primary_dark, 0.8);
+            }
+        }
+    }
+}
+
+ul.foods
+{
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    position: relative;
+    z-index: -1;
+
+    li
+    {
+        width: 40px;
+        height: 40px;
+        display: block;
+        position: absolute;
+        bottom: -40px;
+        animation: up 2s infinite;
+        animation-direction: alternate;
+        z-index: -1;
+    }
+}
+
+span.error-msg-login
+{
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 10px;
+}
+
+// DESKTOP VERSION
+@media screen and (min-width: 780px)
+{
+    body
+    {
+        background-image: url('/images/background.png');
+    }
+
+    span.copyright
+    {
+        display: none;
+    }
+
+    div.mainContainer
+    {
+        div.form-content
+        {
+            width: 420px;
+
+            div.title-login
+            {
+                align-items: flex-start;
+
+                img#login-logo
+                {
+                    display: none;
+                }
+
+                span#app-name
+                {
+                    display: block;
+                }
+            }
+        }
+    }
+}

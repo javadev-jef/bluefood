@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}"
+    th:with="link=@{/cliente/home}, search='noshow'">
+
+<body>
+    <div layout:fragment="content">
+        <main class="container center-80">
+            <h4 class="titulo">Carrinho <span th:text="'- '+${carrinho.restaurante.razao}" th:if="!${carrinho.isVazio()}"></span></h4>
+            <!--LIST ITEM / MOBILE-->
+            <section class="itens-carrinho mCustomScrollbar" data-mcs-theme="minimal-dark">
+                <section class="lista-produtos-carrinho">
+                    <div class="produto" th:each="item, row : ${carrinho.itens}" th:if="!${carrinho.isVazio()}">
+                        <div class="imagem-produto">
+                            <img th:src="@{/images/remote/comida/} + ${item.itemCardapio.imagem}"/>
+                        </div>
+                        <div class="detalhes-produto">
+                            <div class="descricao-produto">
+                                <h4 th:text="${item.itemCardapio.nome}"></h4>
+                                <div class="group-buttons-inline">
+                                    <div class="input-counter" style="margin-right: 10px;">
+                                        <input type="hidden" name="index" th:value="${row.index}">
+                                        <i th:onclick="'location.href=\''+@{/cliente/carrinho/subtrairQtdItem}+'?index=' +${row.index}+'\';'" class="material-icons">&#xe15b;</i>
+                                        <input th:id="'item-m-'+${row.count}" type="text" th:value="${item.quantidade}" readonly/>
+                                        <i th:onclick="'location.href=\''+@{/cliente/carrinho/somarQtdItem}+'?index=' +${row.index}+'\';'" id="sum" class="material-icons">&#xe145;</i>
+                                    </div>
+                                    <i class="material-icons nav-icon delete-button" th:onclick="'location.href=\''+@{/cliente/carrinho/remover}+ '?itemId=' +${item.itemCardapio.id}+'&index='+${row.index}+'\';'">&#xe872;</i>
+                                    <span class="valor-produto" th:text="${#numbers.formatCurrency(item.precoCalculado)}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="produto" th:if="${carrinho.isVazio()}">Carrinho não possui itens</div>
+                </section>
+
+                <div class="total-carrinho" th:if="!${carrinho.isVazio()}">
+                    <div>
+                        <strong>Entrega:</strong>
+                        <span th:text="${#numbers.formatCurrency(carrinho.restaurante.taxaEntrega)}"></span>
+                    </div>
+                    <div>
+                        <strong>Total:</strong>
+                        <span th:text="${#numbers.formatCurrency(carrinho.getPrecoTotal(true))}"></span>
+                    </div>
+                </div>
+
+                <form th:action="@{/cliente/carrinho/pagamento}" method="GET" th:if="!${carrinho.isVazio()}">
+                    <input type="submit" value="Fechar Pedido" th:attr="disabled=${carrinho.isVazio()}"/>
+                </form>
+            </section>
+            <!--END - LIST ITEM / MOBILE-->
+
+            <!--LIST ITEM / DESKTOP-->
+            <section class="itens-carrinho-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Quantidade</th>
+                            <th>Valor Unitário</th>
+                            <th>Sub Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="carrinhoVazio" th:if="${carrinho.isVazio()}">
+                            <td colspan="4">Carrinho não possui itens</td>
+                        </tr>
+                        <tr th:each="item, row : ${carrinho.itens}" th:if="!${carrinho.isVazio()}">
+                            <td class="produto-info">
+                                <div class="img-produto">
+                                    <img th:src="@{/images/remote/comida/} + ${item.itemCardapio.imagem}"/>
+                                </div>
+                                <div class="descricao">
+                                    <span th:text="${item.itemCardapio.nome}"></span>
+                                    <span th:text="${item.observacoes != '' ? 'OBS: '+item.observacoes : 'Sem observações'}"></span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-counter" style="display: flex !important;">
+                                    <input type="hidden" name="index" th:value="${row.index}">
+                                    <i th:onclick="'location.href=\''+@{/cliente/carrinho/subtrairQtdItem}+'?index=' +${row.index}+'\';'" class="material-icons">&#xe15b;</i>
+                                    <input th:id="'item-d-'+${row.count}" type="text" th:value="${item.quantidade}" readonly/>
+                                    <i th:onclick="'location.href=\''+@{/cliente/carrinho/somarQtdItem}+'?index=' +${row.index}+'\';'" id="sum" class="material-icons">&#xe145;</i>
+                                </div>
+                                <span class="btn-remover" th:onclick="'location.href=\''+@{/cliente/carrinho/remover}+ '?itemId=' +${item.itemCardapio.id}+'&index='+${row.index}+'\';'">Remover</span>
+                            </td>
+                            <td th:text="${#numbers.formatCurrency(item.preco)}"></td>
+                            <td th:text="${#numbers.formatCurrency(item.precoCalculado)}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="bottom-carrinho">
+                    <form th:action="@{/cliente/carrinho/pagamento}" method="GET">
+                        <div class="button-group">
+                            <input type="submit" value="Fechar Pedido" th:attr="disabled=${carrinho.isVazio()}"/>
+                            <input type="reset" value="Limpar Carrinho" th:attr="disabled=${carrinho.isVazio()}" th:onclick="'location.href=\''+@{/cliente/carrinho/limparCarrinho}+'\';'"/>
+                        </div>
+                    </form>
+                    <ul class="infos-total" th:if="!${carrinho.isVazio()}">
+                        <li>
+                            <div class="taxaEnterga">
+                                <strong>Entrega</strong>
+                                <span th:text="${#numbers.formatCurrency(carrinho.restaurante.taxaEntrega)}"></span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="totalCarrinho" title="Valor total + taxa de entrega">
+                                <strong>Total</strong>
+                                <span th:text="${#numbers.formatCurrency(carrinho.getPrecoTotal(true))}"></span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+            <!--END - LIST ITEM / DESKTOP-->
+        </main>
+    </div>
+</body>
+</html>

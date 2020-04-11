@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html
+    lang="pt-BR"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}" th:with="link=@{/cliente/home}">
+
+<body>
+    <div layout:fragment="content">
+        <main class="container">
+            <!--SLIDER RESTAURANT CATEGORY-->
+            <h4 class="titulo">Categorias</h4>
+            <section class="categorias-restaurante">
+                <form id="formComida" th:action="@{/cliente/search}" method="GET" th:object="${searchFilter}">
+                    <input class="searchType" type="hidden" th:field="*{searchType}"/>
+                    <input class="idCategoria" type="hidden" th:field="*{idCategoria}"/>
+                    <input class="descCategoria" type="hidden" th:field="*{descCategoria}">
+                    <div class="categorias-restaurante-flex">
+                        <div class="categoria-restaurante" th:each="categoria : ${categorias}" th:data-categoria="${categoria.descricao}" th:onclick="'searchRest(this, '+${categoria.id}+', \'formComida\');'">
+                            <div class="categoria" th:style="'background-image: url(' + @{/images/remote/categoria-comidas/} + ${categoria.urlImagem} +')'"></div>
+                            <span class="categoria-text" th:text="${categoria.descricao}"></span>
+                        </div>
+                    </div>
+                </form>
+                <i class="material-icons btn-next-slick btn-next-comida-slick">&#xe409;</i>
+                <i class="material-icons btn-prev-slick btn-prev-comida-slick">&#xe408;</i>
+            </section>
+            <!--END SLIDER RESTAURANT CATEGORY-->
+
+            <!--RESTAURANTE ORDENATION-->
+            <fieldset>
+                <legend>Listar por</legend>
+                <form id="form-filtros" th:action="@{/cliente/search}" method="GET" th:object="${searchFilter}">
+                    <input class="searchType" type="hidden" value="TEXTO" th:field="*{searchType}"/>
+    
+                    <input class="entregaGratis" type="hidden" th:field="*{entregaGratis}"/>
+                    <input class="order" type="hidden" th:field="*{order}"/>
+                    <input class="asc" type="hidden" th:field="*{asc}"/>
+                    
+                    <select onchange="submitForm(this)" th:field="*{option}" class="input-filter">
+                        <option 
+                            th:each="option : ${T(br.com.bluefood.domain.restaurante.SearchFilter.Options).values()}"
+                            th:value="${option}" th:text="${option.legenda}" th:if="${restaurantes.size() != 0}"></option>
+                        <option value="" th:if="${restaurantes.size() == 0}">Nenhum</option>
+                    </select>
+                    <div style="font-size: 12px;">
+                        <span th:if="${restaurantes.size() == 1}" th:text="${restaurantes.size()} + ' restaunte encontrado'"></span>
+                        <span th:if="${restaurantes.size() > 1}" th:text="${restaurantes.size()} + ' restauntes encontrados'"></span>
+                    </div>
+                </form>
+            </fieldset>
+            <!--END - RESTAURANTE ORDENATION-->
+
+            <!--RESTAURANT LIST-->
+            <h4 class="titulo">Restaurantes</h4>
+            <section class="lista-restaurantes">
+                <div class="restaurante" th:each="restaurante : ${restaurantes}"
+                     th:onclick="'location.href=\'' + @{/cliente/restaurante} + '?idRestaurante=' + ${restaurante.id} + '\';'">
+                    <div class="logo-restaurante bg-img-cover"
+                        th:style="'background-image: url(' + @{/images/remote/logotipo/} + ${restaurante.logotipo} +')'">
+                    </div>
+                    <div class="detalhes-restaurante">
+                        <h4 class="descricao-restaurante" th:text="${restaurante.razao}"></h4>
+                        <ul>
+                            <li>
+                                <i class="material-icons clock-entrega" title="Tempo de entrega">&#xe192;</i>
+                                <span th:text="${restaurante.calcularTempoEntrega(cep)} +'m' + ' - Entrega '+${#numbers.formatCurrency(restaurante.taxaEntrega)}"></span>
+                            </li>
+                            <li>
+                                <i class="material-icons-outlined clock-entrega" title="Tempo de entrega">&#xe57a;</i>
+                                <span th:text="${restaurante.categoriasAsText}"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div th:if="${restaurantes.size() == 0}" class="not-found">
+                    <span>Nenhum restaurante encontrado para</span>
+                    <span th:if="${searchFilter.idCategoria != null}"> categoria </span>
+                    <strong th:text="${searchFilter.idCategoria == null ? searchFilter.texto : searchFilter.descCategoria}"></strong>
+                </div>
+            </section>
+            <!--END - RESTAURANT LIST-->
+        </main>
+    </div>
+    <div layout:fragment="othersImports">
+        <script th:src="@{/js/slick.js}"></script> <!--SLICK SLIDER-->
+        <script th:src="@{/js/sliders.js}"></script> <!--SLIDERS CONTROLLER-->
+    </div>
+</body>
+</html>

@@ -1,0 +1,127 @@
+section.itens-pedido
+{
+    max-height: calc(100vh - 157px);
+    height: 100vh;
+
+    //FIXED BUG JQUERY SCROLLER - ONLY THIS PAGE
+    #mCSB_1_container
+    {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: calc(100vh - 157px);
+    }
+
+    input[type=button], input[type=submit]
+    {
+        width: 100%;
+        border-radius: 0;
+        border-bottom: none;
+    }
+
+    div.total-pedido
+    {
+        background-color: #E6E6E6;
+        position: fixed;
+        bottom: 55px;
+        width: 100%;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        text-align: center;
+        line-height: 30px;
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+        color: #333333;
+
+        div{
+            flex: 1;
+            height: 100%;
+        }
+    }
+
+    //LISTA DE PRODUTOS
+    section.lista-produtos-pedido
+    {
+        div.produto
+        {
+            width: 100%;
+            height: 100px;
+            border-top: 1px #D8D8D8 solid;
+            display: flex;
+            font-size: 14px;
+            background-color: rgba(242, 242, 242, 0.5);
+            padding: 12px;
+            align-items: center;
+            -webkit-tap-highlight-color: transparent;
+
+            &:last-of-type
+            {
+                border-bottom: 1px #D8D8D8 solid;
+            }
+
+            div.detalhes-produto
+            {
+                width: calc(100% - 72px);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0px 12px;
+
+                div.descricao-produto
+                {
+                    max-height: 100%;
+                    width: calc(100%);
+
+                    div.group-buttons-inline
+                    {
+                        display: flex;
+                        padding: 6px 0 0 0;
+                        position: relative;
+                    }
+                }
+
+                span.valor-produto
+                {
+                    position: absolute;
+                    right: 0;
+                    color: limegreen;
+                }
+            }
+
+            div.imagem-produto
+            {
+                width:72px;
+                height: 72px;
+                border: 1px #D8D8D8 solid;
+                border-radius: 4px;
+
+                > img
+                {
+                    object-fit: cover;
+                    border-radius: 4px;
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
+    }
+}
+
+section.itens-pedido-table
+{
+    display: none;
+}
+
+//DESKTOP VERSION
+@media screen and (min-width: 768px)
+{
+    section.itens-pedido
+    {
+        display: none;
+    }
+
+    section.itens-pedido-table
+    {
+        display: block;
+    }
+}

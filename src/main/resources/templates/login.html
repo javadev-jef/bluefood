@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html 
+    lang="pt-BR"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jefersom Martins"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" th:href="@{/css/style-bluefood-login.min.css}">
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}" type="image/x-icon">
+    <title>Bluefood 2.0 - Login</title>
+</head>
+<body onload="renderAnimationFoods()">
+    <!--ROOT CONTENT-->
+    <div class="mainContainer">
+        <div class="form-content">
+            <div class="title-login">
+                <span id="app-name">BLUEFOOD 2.0</span>
+                <img id="login-logo" th:src="@{/images/icons/logo_app.png}" width="150" style="margin-bottom: 20px;">
+                <h1>Portal do Usuário</h1>
+            </div>
+
+            <!--MSG SERVER RESPONSE-->
+            <span class="error-input error-msg-login" th:if="${msg} != null" th:text="${msg}"></span>
+            <!--END - SERVER RESPONSE-->
+
+            <div class="inputs-form">
+                <form method="POST" th:action="@{/login}">
+
+                    <label>Login</label>
+                    <input 
+                        type="text" 
+                        name="username"
+                        placeholder="usuario@email.com"
+                        th:classappend="${msg != null ? 'error-input' : ''}"/>
+    
+                    <label>Senha</label>
+                    <input 
+                        type="password" 
+                        name="password" 
+                        placeholder="Insira sua senha"
+                        th:classappend="${msg != null ? 'error-input' : ''}"/>
+                    <a href="#">Esqueci minha senha</a>
+    
+                    <input type="submit" value="Entrar"/>
+                </form>
+                <ul class="links">
+                    <li><a th:onclick="@{location.href='/public/cliente/new'}">Criar conta cliente</a></li>
+                    <li><a th:onclick="@{location.href='/public/restaurante/new'}">Criar conta restaurante</a></li>
+                </ul>
+            </div>
+            <span class="copyright">© Copyright <span th:text="${yearFooter}"></span> bluefood.com.br - All Rights Reserved</span>
+        </div>
+    </div>
+    <!--END - ROOT CONTENT-->
+
+    <!--ANIMATED FOODS IMAGE-->
+    <ul class="foods"></ul>
+    <!--END - ANIMATED FOODS IMAGE-->
+    
+    <!--PAGE IMPORTS-->
+    <script th:src="@{/js/viewController.js}"></script>
+    <script th:src="@{/js/renderAnimationFoods.js}"></script>
+    <!--END - PAGE IMPORTS-->
+</body>
+</html>
