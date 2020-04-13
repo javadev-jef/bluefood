@@ -5,6 +5,10 @@
 - Git
 - Java 11 ou superior
 - Spring Boot
+- Mysql
+
+# Preview
+![Telas Pages](https://github.com/javadev-jef/bluefood/blob/master/bluefood-pages.gif)
 
 # Importando o projeto
 Ao importar o projeto é necessário adicionar a JVM um argumento (vmArgs) para que ao iniciar o projeto, seja carregado o profile de desenvolvimento (DEV).
