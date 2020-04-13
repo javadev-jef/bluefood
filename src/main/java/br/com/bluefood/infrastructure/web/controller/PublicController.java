@@ -71,6 +71,7 @@ public class PublicController
                     restauranteService.saveRestaurante(restaurante);
                     model.addAttribute("restaurante", new Restaurante());
                     model.addAttribute("msg", "Restaurante cadastrado com sucesso!");
+                    model.addAttribute("invalidSession", true);
                     model.addAttribute("validationError", false);
                 }
                 else
@@ -108,6 +109,7 @@ public class PublicController
                 clienteService.saveCliente(cliente);
                 model.addAttribute("cliente", new Cliente());
                 model.addAttribute("msg", "Cliente cadastrado com sucesso!");
+                model.addAttribute("invalidSession", true);
                 model.addAttribute("validationError", false);
             }
             catch(ValidationException e)
