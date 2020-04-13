@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"/>
     <!--TOASTFY SCRIPT-->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <meta http-equiv="Refresh" th:attr="content=${'5; url='} + @{/logout}" th:if="${invalideSession}"/>
+    <meta http-equiv="Refresh" th:attr="content=${'5; url='} + @{/logout}" th:if="${invalidSession}"/>
 </head>
 <body onload="renderAnimationFoods();showToastPage('validationMsg');loadInputFiles()" 
     th:classappend="${!editMode} ? 'bg-blue-primary' : ''">

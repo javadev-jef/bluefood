@@ -116,7 +116,7 @@ public class ClienteController
             {
                 cliente = clienteService.saveCliente(cliente);
                 model.addAttribute("msg", "Dados alterados com sucesso!");
-                model.addAttribute("invalideSession", true);
+                model.addAttribute("invalidSession", true);
                 model.addAttribute("validationError", false);
             }
             catch(ValidationException e)

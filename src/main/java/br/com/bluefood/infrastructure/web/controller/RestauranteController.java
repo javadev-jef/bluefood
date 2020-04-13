@@ -120,7 +120,7 @@ public class RestauranteController
             {
                 restaurante = restauranteService.saveRestaurante(restaurante);
                 model.addAttribute("msg", "Dados alterados com sucesso!");
-                model.addAttribute("invalideSession", true);
+                model.addAttribute("invalidSession", true);
                 model.addAttribute("validationError", false);
             }
             catch(ValidationException e)
