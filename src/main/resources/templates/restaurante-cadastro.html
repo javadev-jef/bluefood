@@ -153,7 +153,7 @@
                         pattern="(^\d+(\.|,)?\d+)$|(^\d)$"
                         title="Ex: 5,32"
                         th:field="*{taxaEntrega}"
-                        th:classappend="${#fields.hasErrors('taxaEntrega') ? 'error-input' : ''}" required/>
+                        th:classappend="${#fields.hasErrors('taxaEntrega') ? 'error-input' : ''}"/>
                     <span class="error-input" th:if="${#fields.hasErrors('taxaEntrega')}" th:errors="*{taxaEntrega}"></span>
 
                     <label>Tempo de Entrega (min)</label>
