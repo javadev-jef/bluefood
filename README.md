@@ -4,7 +4,6 @@
 # Pré requisitos
 - Git
 - Java 11 ou superior
-- Spring Boot
 - Mysql
 
 # Preview
